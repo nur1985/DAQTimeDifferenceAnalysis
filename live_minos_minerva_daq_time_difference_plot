@@ -1,0 +1,38 @@
+#!/bin/bash
+#################################################################
+# A shell script to use python+root to plot
+# Nuruzzaman <nur@fnal.gov>, Date Created: 01/21/2017
+# 
+#################################################################
+MINERvA_VNC_SHIFT_SOFTWARE="v1.0"
+LAST_MODIFIED="01/25/2017"
+
+declare -a EMAIL_EXPERT=(       "minerva-ops-logs@fnal.gov"
+#				"nur@fnal.gov"
+)
+
+CONNECTED=$(whoami)@$(hostname)
+LOCAL_DIR="/home/minerva/cmtuser/Minerva_v10r9p1/Tools/ControlRoomTools/minos_minerva_daq_time_difference"
+IMAGE_SOURCE_DIR_LOCAL="$LOCAL_DIR/plots"
+#IMAGE_COPY_DIR="mnvonline@minervagpvm02.fnal.gov:/web/sites/minerva.fnal.gov/htdocs/shift/images"
+IMAGE_COPY_DIR="/web/sites/minerva.fnal.gov/htdocs/shift/images"
+
+# Kerberize your session
+KERBERIZE_SESSION="source $HOME/mnvdaqrunscripts/Kerberize"
+echo -e "$KERBERIZE_SESSION"
+$KERBERIZE_SESSION
+
+# Create plot
+cd $LOCAL_DIR
+/usr/bin/python2.6 MakeMinosMinervaDAQTimeDifferencePlot.py
+echo -e "Created plots"
+sleep 1
+
+# Copy plots to webserver 
+LATEST_IMAGE="$IMAGE_SOURCE_DIR_LOCAL/minerva_minos_daq_time_difference_plot.png"
+echo -e "$LATEST_IMAGE"
+COPY_IMAGE_TO_WEB="cp $LATEST_IMAGE $IMAGE_COPY_DIR"
+$COPY_IMAGE_TO_WEB
+echo -e "Plots copied."
+
+

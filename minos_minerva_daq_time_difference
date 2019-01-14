@@ -1,0 +1,22 @@
+#!/bin/bash
+#################################################################
+# A shell script to check the time difference between MINERvA and 
+# MINOS DAQ servers. 
+# The scripts needs to run as root from a machine which has access 
+# to both MINERvA and MINOS DAQ machines. 
+#
+# Nuruzzaman <nur@fnal.gov>, Date Created: 01/21/2017
+#################################################################
+LAST_MODIFIED="01/24/2017"
+
+kinit -k
+
+#SOURCE_DIR=`pwd`
+SOURCE_DIR="/home/minos/minos_minerva_daq_time_difference"
+LOGS_DIR="$SOURCE_DIR/logs"
+DAILY_TIME_LOGS="$LOGS_DIR/$(date +%Y%m%d)_minerva_minos_daq_time_difference.txt"
+LOCAL_TIME="$(date +%Y%m%d%H%M%S)"
+
+echo "DAQ is Running"
+echo "$(/bin/date +%Y%m%d%H%M%S) $(ssh minos@minos-daq08-nd.fnal.gov '/bin/date +%Y%m%d%H%M%S%N') $(ssh minerva@mnvonline06.fnal.gov '/bin/date +%Y%m%d%H%M%S%N') $(($(ssh minos@minos-daq08-nd.fnal.gov '/bin/date +%Y%m%d%H%M%S%N') - $(ssh minerva@mnvonline06.fnal.gov '/bin/date +%Y%m%d%H%M%S%N'))) " >> $DAILY_TIME_LOGS
+
